@@ -1,17 +1,18 @@
 import React from 'react';
-import { render } from "react-dom";
+
 import { FieldRenderProps } from "react-final-form";
 import { FormFieldProps,Form, Label, Select } from "semantic-ui-react";
-import { category } from '../options/categoryOptions';
+
 
 interface IProps 
-    extends FieldRenderProps<string,HTMLElement> , FormFieldProps{}
+    extends  FormFieldProps,FieldRenderProps<string,HTMLElement>{}
 
 
 export const SelectInput:React.FC<IProps> = ({
     input,
     width,
     placeholder,
+    options,
     meta: { touched, error }
 }) => {
     
@@ -21,7 +22,7 @@ export const SelectInput:React.FC<IProps> = ({
                 value={input.value}
                 onChange={(e,data)=>input.onChange(data.value)}
                 placeholder={placeholder} 
-                options={category}
+                options={options}
             ></Select>
             {touched && error && (
                 <Label basic color="red" >

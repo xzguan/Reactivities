@@ -3,13 +3,14 @@ import React, {useEffect,Fragment,  useContext} from 'react';
 //import logo from './logo.svg';
 import './styles.css';
 
-import {Container  } from "semantic-ui-react";
+import {Container, Input  } from "semantic-ui-react";
 import 'semantic-ui-css/semantic.min.css';
 import  ActivityDashboard  from "../../features/activities/dashboard/ActivityDashboard";
 import NavBar from '../../features/nav/navBar';
 
 import { LoadingComponent } from "./LoadingComponent";
-import  ActivityStore  from "../stores/activityStore";
+
+import {RootStoreContext  } from "../stores/rootStore";
 import { observer } from 'mobx-react-lite';
 import { Route, withRouter, RouteComponentProps, Switch } from 'react-router-dom';
 import { HomePage } from "../../features/Home/HomePage";
@@ -18,18 +19,22 @@ import ActivityDetails from '../../features/activities/details/ActivityDetails';
 import { NotFound } from './NotFound';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
+import LoginForm from '../../features/user/LoginForm';
+import RegisterForm from '../../features/user/RegisterForm';
+import ModalContainer  from "../../app/common/modals/ModalContainer";
+
 
 const App : React.FC<RouteComponentProps> = ({location}) => {
   
-  const activeStore=useContext(ActivityStore)
+  const rootStore=useContext(RootStoreContext)
   
-  const {loadingInitial,loadActivities}=activeStore;
+  const {loadingInitial,loadActivities}=rootStore.activityStore;
  
 
   useEffect(()=>{
-     console.log("loading")
+     //console.log("loading")
      loadActivities()
-     console.log("finished")
+     //console.log("finished")
   },[loadActivities])
 
     if(loadingInitial){
@@ -40,6 +45,7 @@ const App : React.FC<RouteComponentProps> = ({location}) => {
  
     return (
       <Fragment>
+          <ModalContainer />
           <ToastContainer position="bottom-right" />
           <Route  exact path='/' component={HomePage}  />
           <Route  
@@ -58,6 +64,8 @@ const App : React.FC<RouteComponentProps> = ({location}) => {
                   <Route key={location.key}
                     path={['/create', '/manage/:id']} component={ActivityForm}
                   />
+                  <Route path="/login" component={LoginForm} />
+                  <Route path="/register" component={RegisterForm} />
                   <Route component={NotFound} />
                 </Switch>
             </Container>

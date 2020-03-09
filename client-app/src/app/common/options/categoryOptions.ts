@@ -1,4 +1,4 @@
-export const category = [
+export const categories = [
     { key: 'drinks', text: 'Drinks', value: 'drinks' },
     { key: 'culture', text: 'Culture', value: 'culture' },
     { key: 'film', text: 'Film', value: 'film' },

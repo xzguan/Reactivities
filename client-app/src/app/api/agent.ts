@@ -2,14 +2,23 @@ import axios, { AxiosResponse } from "axios";
 import { IActivity } from "../models/activity";
 import { toast } from "react-toastify";
 import {history} from "../..";
+import { resolve } from "dns";
+import { IUser, IUserFormValues } from "../models/user";
 //import { NotFound } from "../layout/NotFound";
 
 
 axios.defaults.baseURL="http://localhost:5000/api";
 
+axios.interceptors.request.use((config)=>{
+    const token=window.localStorage.getItem("jwt");
+    if(token) config.headers.Authorization=`Bearer ${token}`;
+        return config;
+},(error)=>{
+    return Promise.reject(error);
+})
 
 axios.interceptors.response.use((data)=>{
-    console.log("response:data",data);
+    //console.log("response:data",data);
     return data;
 },(error)=>{
     console.log("response:error",error.message);
@@ -19,7 +28,7 @@ axios.interceptors.response.use((data)=>{
         history.push('/NoFound')
     }
     
-    const {status,data,config}=error.response;
+    const {status,data,config}=error;
     if(status===400 && config.method==="get" && data.errors.hasOwnProperty("id")){
         history.push("/notfound")
     }
@@ -29,18 +38,22 @@ axios.interceptors.response.use((data)=>{
     if(status===500) {
         toast.error("server error -- check the terminal for more info!")
     }
+    //console.log(JSON.stringify(error.response))
+    throw error.response;
 })
 
-// axios.interceptors.request.use((config)=>{
-//     console.log(config);
-//     return config;
-// },(error)=>{console.log(error)})
+// const sleep=(ms:number)=>(response:AxiosResponse)=>{
+//     return new Promise<AxiosResponse>((resolve)=>setTimeout(() => {
+//         resolve(response)
+//     }, ms))
+// }
 
-const sleep=(ms:number)=>(response:AxiosResponse)=>{
-    return new Promise<AxiosResponse>((resolve)=>setTimeout(() => {
+
+const sleep=(ms:number)=>(response:AxiosResponse)=>(
+    new Promise<AxiosResponse>((resolve)=>(setTimeout(() => {
         resolve(response)
-    }, ms))
-}
+    }, ms)))
+)
 
 const responseBody=(response:AxiosResponse)=>response?response.data:null;
 const requests={
@@ -57,4 +70,12 @@ const Activities = {
     update: (activity:IActivity) => requests.put(`/activities/${activity.id}`,activity),
     delete: (id:string) => requests.del(`/activities/${id}`)
 }
-export default {Activities}
+const User={
+    current: ():Promise<IUser> => requests.get("/user"),
+    login: (user: IUserFormValues) : Promise<IUser> => requests.post("/user/login",user),
+    register: (user: IUserFormValues) : Promise<IUser> => requests.post("/user/register",user)
+}
+export default {
+    Activities,
+    User
+}
