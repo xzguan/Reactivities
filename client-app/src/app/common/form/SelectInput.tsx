@@ -5,7 +5,7 @@ import { FormFieldProps,Form, Label, Select } from "semantic-ui-react";
 import { category } from '../options/categoryOptions';
 
 interface IProps 
-    extends FieldRenderProps<string,HTMLElement>, FormFieldProps {}
+    extends FieldRenderProps<string,HTMLElement> , FormFieldProps{}
 
 
 export const SelectInput:React.FC<IProps> = ({
@@ -14,6 +14,7 @@ export const SelectInput:React.FC<IProps> = ({
     placeholder,
     meta: { touched, error }
 }) => {
+    
     return (
         <Form.Field error={touched && !!error} width={width} >
             <Select

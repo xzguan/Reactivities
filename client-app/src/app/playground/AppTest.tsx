@@ -1,7 +1,7 @@
 import React from 'react';
 import 'semantic-ui-css/semantic.min.css';
 import { Form as FinalForm, Field, FieldRenderProps } from "react-final-form";
-import { Container, Grid, Header, Segment,  Button, Message, Modal,Image, CardMeta, Form, Select, Input, FormFieldProps } from "semantic-ui-react";
+import { Container, Grid, Header, Segment,  Button, Message, Modal,Image, CardMeta, Form, Input, FormFieldProps } from "semantic-ui-react";
 import { ValidationErrors } from 'final-form';
 import { SelectInput } from "../common/form/SelectInput";
 import { category } from '../common/options/categoryOptions';
