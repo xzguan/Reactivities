@@ -1,4 +1,8 @@
-﻿using System;
+﻿using System.Reflection.Metadata;
+using System.Globalization;
+using System.Security.Cryptography.X509Certificates;
+using System.Collections.Immutable;
+using System;
 using Microsoft.EntityFrameworkCore;
 using Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -12,7 +16,8 @@ namespace Persistence
             
         }
         public DbSet<Value> Values { get; set; }
-        public DbSet<Activity> Activities { get; set; }
+        public DbSet<Activity> Activities { get; set; } 
+        public DbSet<UserActivity> UserActivities { get; set; }
         protected override void OnModelCreating(ModelBuilder builder){
             base.OnModelCreating(builder);
             builder.Entity<Value>()
@@ -21,6 +26,15 @@ namespace Persistence
                     new Value {Id=2, Name="Value 102"},
                     new Value {Id=3, Name="Value 103"}
                 );
+            builder.Entity<UserActivity>((x)=> x.HasKey( ua=> new {ua.AppUserId, ua.ActivityId }) );
+            builder.Entity<UserActivity>()
+                .HasOne( u =>u.AppUser)
+                .WithMany( a =>a.UserActivities)
+                .HasForeignKey(u=>u.AppUserId);
+            builder.Entity<UserActivity>()
+                .HasOne( a => a.Activity)
+                .WithMany(u=>u.UserActivities)
+                .HasForeignKey(a=>a.ActivityId);
         }
     }
 }
